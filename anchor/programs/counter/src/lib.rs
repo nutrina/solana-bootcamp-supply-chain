@@ -45,6 +45,10 @@ pub mod counter {
         let cpi_program = ctx.accounts.token_program.to_account_info();
         let cpi_context = CpiContext::new(cpi_program, cpi_accounts).with_signer(signer_seeds);
         token_interface::mint_to(cpi_context, amount)?;
+
+        let counter = &mut ctx.accounts.counter;
+        counter.mint = ctx.accounts.mint.key(); // Set the owner
+
         Ok(())
     }
 
@@ -163,4 +167,5 @@ pub struct Update<'info> {
 #[derive(InitSpace)]
 pub struct Counter {
     count: u8,
+    mint: Pubkey
 }

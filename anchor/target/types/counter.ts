@@ -354,6 +354,10 @@ export type Counter = {
           {
             "name": "count",
             "type": "u8"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
           }
         ]
       }

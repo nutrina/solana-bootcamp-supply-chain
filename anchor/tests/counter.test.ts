@@ -134,6 +134,7 @@ describe('counter', () => {
     console.log('To                       ', program.provider.publicKey)
     console.log('To token address         ', recipientTokenAccount.address)
     console.log('To token address         ', recipientTokenAccount.owner)
+    console.log('To token address         ', recipientTokenAccount)
   })
 
   it.skip('Transfer Tokens - 2', async () => {
@@ -266,13 +267,30 @@ describe('counter', () => {
     console.log('transfer 3 - 10')
 
     const toTokenAccountFinal = await getAccount(connection, toTokenAccount.address, 'confirmed', TOKEN_2022_PROGRAM_ID)
+    const senderTokenAccount = await getAccount(program.provider.connection, token, 'confirmed', TOKEN_2022_PROGRAM_ID)
 
     // const fromAccount = await getAccount(connection, fromWallet.publicKey);
     console.log('fromWallet', fromWallet.publicKey.toBase58())
     console.log('toWallet', toWallet.publicKey.toBase58())
     console.log('fromTokenAccount', fromTokenAccount.toBase58())
     console.log('toTokenAccountFinal', toTokenAccountFinal)
+    console.log('senderTokenAccount', senderTokenAccount)
     // console.log('toTokenAccount?', await getAccount(connection, toTokenAccount.address))
+
+    const associatedTokenAccount = await getAssociatedTokenAddress(
+      mint,
+      program.provider.publicKey as PublicKey,
+      false,
+      TOKEN_2022_PROGRAM_ID,
+    )
+
+    const senderTokenAccount1 = await getAccount(
+      program.provider.connection,
+      associatedTokenAccount,
+      'confirmed',
+      TOKEN_2022_PROGRAM_ID,
+    )
+    console.log('senderTokenAccount1', senderTokenAccount1)
   })
   ///////////////////////////////////////////////////////////////
   // END: SPL tests
