@@ -104,62 +104,110 @@ export type Counter = {
         {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize2",
+      "discriminator": [
+        9,
+        203,
+        254,
+        64,
+        89,
+        32,
+        179,
+        159
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
         },
         {
-          "name": "mint",
+          "name": "counter",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  115,
                   99,
-                  45,
-                  116,
                   111,
-                  107,
+                  117,
+                  110,
+                  116,
                   101,
-                  110,
-                  45,
-                  109,
-                  105,
-                  110,
-                  116
+                  114
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
               }
             ]
           }
         },
         {
-          "name": "tokenProgram"
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize3",
+      "discriminator": [
+        249,
+        81,
+        6,
+        118,
+        183,
+        239,
+        202,
+        11
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
         },
         {
-          "name": "tokenAccount",
+          "name": "counter",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  115,
                   99,
-                  45,
-                  116,
                   111,
-                  107,
+                  117,
+                  110,
+                  116,
                   101,
-                  110
+                  114
                 ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
               }
             ]
           }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "amount",
-          "type": "u64"
+          "name": "serialNumber",
+          "type": "u32"
         }
       ]
     },
@@ -185,147 +233,6 @@ export type Counter = {
         {
           "name": "value",
           "type": "u8"
-        }
-      ]
-    },
-    {
-      "name": "transferTokens",
-      "discriminator": [
-        54,
-        180,
-        238,
-        175,
-        74,
-        85,
-        126,
-        188
-      ],
-      "accounts": [
-        {
-          "name": "signer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "mint",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  115,
-                  99,
-                  45,
-                  116,
-                  111,
-                  107,
-                  101,
-                  110,
-                  45,
-                  109,
-                  105,
-                  110,
-                  116
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "senderTokenAccount",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  115,
-                  99,
-                  45,
-                  116,
-                  111,
-                  107,
-                  101,
-                  110
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "recipientTokenAccount",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "account",
-                "path": "signer"
-              },
-              {
-                "kind": "account",
-                "path": "tokenProgram"
-              },
-              {
-                "kind": "account",
-                "path": "mint"
-              }
-            ],
-            "program": {
-              "kind": "const",
-              "value": [
-                140,
-                151,
-                37,
-                143,
-                78,
-                36,
-                137,
-                241,
-                187,
-                61,
-                16,
-                41,
-                20,
-                142,
-                13,
-                131,
-                11,
-                90,
-                19,
-                153,
-                218,
-                255,
-                16,
-                132,
-                4,
-                142,
-                123,
-                216,
-                219,
-                233,
-                248,
-                89
-              ]
-            }
-          }
-        },
-        {
-          "name": "tokenProgram"
-        },
-        {
-          "name": "associatedTokenProgram",
-          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
-        },
-        {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
         }
       ]
     }
@@ -358,6 +265,10 @@ export type Counter = {
           {
             "name": "mint",
             "type": "pubkey"
+          },
+          {
+            "name": "serialNumber",
+            "type": "u32"
           }
         ]
       }
