@@ -25,11 +25,13 @@ describe('counter', () => {
   const program = anchor.workspace.Counter as Program<Counter>
   const [mint, bump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from('sc-token-mint')], program.programId)
 
-  console.log('geri - mint, bump', mint, bump)
+  console.log('geri - mint, bump', mint.toBase58(), bump)
 
   const [token, tokenBump] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from('sc-token')], program.programId)
 
-  console.log('geri - token, tokenBump', token, tokenBump)
+  console.log('geri - token, tokenBump', token.toBase58(), tokenBump)
+
+  console.log('geri - payer', payer.publicKey.toBase58())
 
   const counterKeypair = Keypair.generate()
 
@@ -54,16 +56,16 @@ describe('counter', () => {
     try {
       const mintAccount = await getMint(program.provider.connection, mint, 'confirmed', TOKEN_2022_PROGRAM_ID)
 
-      console.log('Mint Account', mintAccount)
+      console.log('Mint Account', mintAccount.address.toBase58())
     } catch (e) {
       console.log('Error: ', e)
     }
 
-    // Checl created token account
+    // Check created token account
     try {
       const tokenAccount = await getAccount(program.provider.connection, token, 'confirmed', TOKEN_2022_PROGRAM_ID)
 
-      console.log('Token Account', tokenAccount)
+      console.log('Token Account', tokenAccount.address.toBase58())
     } catch (e) {
       console.log('Error: ', e)
     }
@@ -136,60 +138,59 @@ describe('counter', () => {
 
   it.skip('Transfer Tokens - 2', async () => {
     try {
-    //   console.log(' transfer test 2')
-    //   const recipient = Keypair.generate()
-    //   console.log(' transfer test 2 - recipient', recipient)
-    // const fromTokenAccount = await getOrCreateAssociatedTokenAccount(provider.connection, payer.payer, mint, fromWallet.publicKey)
+      //   console.log(' transfer test 2')
+      //   const recipient = Keypair.generate()
+      //   console.log(' transfer test 2 - recipient', recipient)
+      // const fromTokenAccount = await getOrCreateAssociatedTokenAccount(provider.connection, payer.payer, mint, fromWallet.publicKey)
 
-    //   const RecipientTokenAccount = await createAssociatedTokenAccount(
-    //     provider.connection,
-    //     payer.payer,
-    //     mint,
-    //     recipient.publicKey,
-    //     undefined,
-    //     TOKEN_2022_PROGRAM_ID,
-    //   )
+      //   const RecipientTokenAccount = await createAssociatedTokenAccount(
+      //     provider.connection,
+      //     payer.payer,
+      //     mint,
+      //     recipient.publicKey,
+      //     undefined,
+      //     TOKEN_2022_PROGRAM_ID,
+      //   )
 
-    //   console.log(' transfer test 2 - tokenAccount', tokenAccount)
-    //   const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
-    //     provider.connection,
-    //     payer.payer,
-    //     mint,
-    //     recipient.publicKey,
-    //     false,
-    //     'confirmed',
-    //     undefined,
-    //     TOKEN_2022_PROGRAM_ID,
-    //   )
+      //   console.log(' transfer test 2 - tokenAccount', tokenAccount)
+      //   const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
+      //     provider.connection,
+      //     payer.payer,
+      //     mint,
+      //     recipient.publicKey,
+      //     false,
+      //     'confirmed',
+      //     undefined,
+      //     TOKEN_2022_PROGRAM_ID,
+      //   )
 
-    //   console.log(' transfer test 2 - recipientTokenAccount', recipientTokenAccount)
+      //   console.log(' transfer test 2 - recipientTokenAccount', recipientTokenAccount)
 
+      //   // const tokenAccount = await getAccount(program.provider.connection, token, 'confirmed', TOKEN_2022_PROGRAM_ID)
 
-    //   // const tokenAccount = await getAccount(program.provider.connection, token, 'confirmed', TOKEN_2022_PROGRAM_ID)
+      //   // // const amount = new anchor.BN(100_000 * 10 ** 6)
 
-    //   // // const amount = new anchor.BN(100_000 * 10 ** 6)
+      //   console.log('sending tokens payer: ', payer)
+      //   console.log('sending tokens from: ', senderTokenAccount.address)
+      //   console.log('sending tokens to: ', recipientTokenAccount.address)
+      //   console.log('sending tokens to: ', payer.payer.publicKey)
+      //   await transfer(provider.connection, payer.payer, fromTokenAccount.address, toTokenAccount.address, fromWallet, 1)
 
-    //   console.log('sending tokens payer: ', payer)
-    //   console.log('sending tokens from: ', senderTokenAccount.address)
-    //   console.log('sending tokens to: ', recipientTokenAccount.address)
-    //   console.log('sending tokens to: ', payer.payer.publicKey)
-    //   await transfer(provider.connection, payer.payer, fromTokenAccount.address, toTokenAccount.address, fromWallet, 1)
-
-    //   const trx = await transfer(
-    //     provider.connection,
-    //     payer.payer,
-    //     senderTokenAccount.address,
-    //     recipientTokenAccount.address,
-    //     payer.payer,
-    //     100_000,
-    //   )
+      //   const trx = await transfer(
+      //     provider.connection,
+      //     payer.payer,
+      //     senderTokenAccount.address,
+      //     recipientTokenAccount.address,
+      //     payer.payer,
+      //     100_000,
+      //   )
       console.log('trx: ')
     } catch (e) {
       console.log('error: ', e)
     }
   })
 
-  it.skip('Transfer Tokens - 3', async () => {
+  it('Transfer Tokens - 3', async () => {
     console.log('transfer 3 - 1')
     // Connect to cluster
     const connection = program.provider.connection
@@ -209,27 +210,36 @@ describe('counter', () => {
 
     console.log('transfer 3 - 4')
     // Create new token mint
-    const mint = await createMint(connection, fromWallet, fromWallet.publicKey, null, 9)
+    // const mint = await createMint(connection, fromWallet, fromWallet.publicKey, null, 9)
 
     console.log('transfer 3 - 5')
     // Get the token account of the fromWallet Solana address, if it does not exist, create it
-    const fromTokenAccount = await getOrCreateAssociatedTokenAccount(connection, fromWallet, mint, fromWallet.publicKey)
+    const fromTokenAccount = await getAssociatedTokenAddress(mint, fromWallet.publicKey, false, TOKEN_2022_PROGRAM_ID)
 
     console.log('transfer 3 - 6')
     //get the token account of the toWallet Solana address, if it does not exist, create it
-    const toTokenAccount = await getOrCreateAssociatedTokenAccount(connection, fromWallet, mint, toWallet.publicKey)
-
-    console.log('transfer 3 - 7')
-    // Minting 1 new token to the "fromTokenAccount" account we just returned/created
-    await mintTo(
+    const toTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
       fromWallet,
       mint,
-      fromTokenAccount.address,
-      fromWallet.publicKey,
-      1000000000, // it's 1 token, but in lamports
-      [],
+      toWallet.publicKey,
+      false,
+      undefined,
+      undefined,
+      TOKEN_2022_PROGRAM_ID,
     )
+
+    console.log('transfer 3 - 7')
+    // Minting 1 new token to the "fromTokenAccount" account we just returned/created
+    // await mintTo(
+    //   connection,
+    //   fromWallet,
+    //   mint,
+    //   fromTokenAccount.address,
+    //   fromWallet.publicKey,
+    //   1000000000, // it's 1 token, but in lamports
+    //   [],
+    // )
 
     console.log('transfer 3 - 8')
     // // Add token transfer instructions to transaction
@@ -242,15 +252,27 @@ describe('counter', () => {
     // await sendAndConfirmTransaction(connection, transaction, [fromWallet])
 
     // Sign transaction, broadcast, and confirm
-    await transfer(connection, payer.payer, fromTokenAccount.address, toTokenAccount.address, fromWallet, 1)
+    await transfer(
+      connection,
+      payer.payer,
+      fromTokenAccount,
+      toTokenAccount.address,
+      fromWallet,
+      100_000,
+      undefined,
+      undefined,
+      TOKEN_2022_PROGRAM_ID,
+    )
     console.log('transfer 3 - 10')
 
+    const toTokenAccountFinal = await getAccount(connection, toTokenAccount.address, 'confirmed', TOKEN_2022_PROGRAM_ID)
+
     // const fromAccount = await getAccount(connection, fromWallet.publicKey);
-    console.log('fromWallet', fromWallet.publicKey)
-    console.log('toWallet', toWallet.publicKey)
-    console.log('fromTokenAccount', fromTokenAccount)
-    console.log('toTokenAccount', toTokenAccount)
-    console.log('toTokenAccount?', await getAccount(connection, toTokenAccount.address))
+    console.log('fromWallet', fromWallet.publicKey.toBase58())
+    console.log('toWallet', toWallet.publicKey.toBase58())
+    console.log('fromTokenAccount', fromTokenAccount.toBase58())
+    console.log('toTokenAccountFinal', toTokenAccountFinal)
+    // console.log('toTokenAccount?', await getAccount(connection, toTokenAccount.address))
   })
   ///////////////////////////////////////////////////////////////
   // END: SPL tests
