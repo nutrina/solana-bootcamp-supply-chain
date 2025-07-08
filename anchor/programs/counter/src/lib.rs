@@ -7,6 +7,8 @@ use anchor_spl::{
 };
 
 declare_id!("FqzkXZdwYjurnUKetJCAvaUw5WAqbwzU6gZEwydeEfqS");
+// declare_id!("Wq4ZJZaweaxKyq5JWddoTAJZXcavFdjU1BCYMX4dzMd");
+
 
 #[program]
 pub mod counter {
@@ -26,7 +28,10 @@ pub mod counter {
         Ok(())
     }
     pub fn initialize(ctx: Context<InitializeCounter>) -> Result<()> {
+
         msg!("Initialized counter");
+        // msg!("Serial number: {}", serial_number);
+
 
         Ok(())
     }
@@ -36,7 +41,13 @@ pub mod counter {
         Ok(())
     }
 
-    pub fn initialize3(ctx: Context<InitializeCounter2>, serial_number: u32) -> Result<()> {
+    pub fn initialize3(ctx: Context<InitializeCounter3>, serial_number: u32) -> Result<()> {
+        msg!("Initialized counter");
+
+        Ok(())
+    }
+
+    pub fn initialize4(ctx: Context<InitializeCounter4>, _seed: String) -> Result<()> {
         msg!("Initialized counter");
 
         Ok(())
@@ -89,6 +100,23 @@ pub struct InitializeCounter3<'info> {
         space = 8 + Counter::INIT_SPACE,
         payer = payer,
         seeds = [b"counter", payer.key().as_ref(), serial_number.to_be_bytes().as_ref()],
+        bump
+    )]
+    pub counter: Account<'info, Counter>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+#[instruction(seed: String)]
+pub struct InitializeCounter4<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
+
+    #[account(
+        init,
+        space = 8 + Counter::INIT_SPACE,
+        payer = payer,
+        seeds = [b"counter", payer.key().as_ref(), seed.as_bytes()],
         bump
     )]
     pub counter: Account<'info, Counter>,

@@ -23,17 +23,26 @@ describe('counter', () => {
   const payer = provider.wallet as anchor.Wallet
 
   const program = anchor.workspace.Counter as Program<Counter>
+  const seedString: string = 'hello'
+
   // const seed1 = Buffer.from("sc-batch");
   const serialNumber = 1
   const seed2 = payer.publicKey.toBuffer()
   const seed3 = new anchor.BN(serialNumber).toBuffer('be', 4)
+  const seed4 = Buffer.from(seedString)
 
   const [counter2, counterBump2] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from('counter'), seed2],
     program.programId,
   )
+
   const [counter3, counterBump3] = anchor.web3.PublicKey.findProgramAddressSync(
     [Buffer.from('counter'), seed2, seed3],
+    program.programId,
+  )
+
+  const [counter4, counterBump4] = anchor.web3.PublicKey.findProgramAddressSync(
+    [Buffer.from('counter'), seed2, seed4],
     program.programId,
   )
 
@@ -49,6 +58,10 @@ describe('counter', () => {
     {
       id: 'counter3',
       address: counter3.toBase58(),
+    },
+    {
+      id: 'counter4',
+      address: counter4.toBase58(),
     },
   ])
 
@@ -84,14 +97,35 @@ describe('counter', () => {
 
   it('Initialize Counter with seed and serial', async () => {
     try {
-      await program.methods
+      console.log('initializing with seed and serial ...')
+      const tx = await program.methods
         .initialize3(serialNumber)
         .accounts({
           payer: payer.publicKey,
         })
         .rpc()
 
-      const currentCount = await program.account.counter.fetch(counter2)
+      console.log('initializing with seed and serial, tx', tx)
+      const currentCount = await program.account.counter.fetch(counter3)
+
+      console.log('initializing with seed and serial, currentCount', currentCount)
+      expect(currentCount.count).toEqual(0)
+    } catch (error) {
+      console.log('Error', error)
+      fail(error)
+    }
+  })
+
+  it('Initialize Counter with seed and seed string', async () => {
+    try {
+      await program.methods
+        .initialize4(seedString)
+        .accounts({
+          payer: payer.publicKey,
+        })
+        .rpc()
+
+      const currentCount = await program.account.counter.fetch(counter4)
 
       expect(currentCount.count).toEqual(0)
     } catch (error) {

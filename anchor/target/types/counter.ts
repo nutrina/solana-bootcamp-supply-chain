@@ -195,6 +195,10 @@ export type Counter = {
               {
                 "kind": "account",
                 "path": "payer"
+              },
+              {
+                "kind": "arg",
+                "path": "serialNumber"
               }
             ]
           }
@@ -208,6 +212,64 @@ export type Counter = {
         {
           "name": "serialNumber",
           "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "initialize4",
+      "discriminator": [
+        1,
+        32,
+        147,
+        188,
+        70,
+        232,
+        247,
+        205
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              },
+              {
+                "kind": "arg",
+                "path": "seed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "seed",
+          "type": "string"
         }
       ]
     },
